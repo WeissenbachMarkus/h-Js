@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Newsletter-Anmeldung</title>
+        <meta charset="UTF-8">
+        <!--CSS für die Newsletter Anmeldung-->
+        <link href="css/style.css" rel="stylesheet" type="text/css">
+
+    </head>
+
+
+
+    <body>
+        <div id="fehler" style="visibility: hidden">
+            <h3>Bitte korrigieren Sie Ihre Eingabe im Feld:</h3>
+        </div>
+
+        <div id="inhalt">
+            <form id="nlform" action="server/register.php">
+                <h1>Registrierung</h1>
+                <ol>
+                    <li>
+                        <label for="Vorname">Vorname</label>
+                        <input id="vorname" type="text" name="Vorname" placeholder="Maxine"  autofocus />
+                    </li>
+                    <li>
+                        <label for="Nachname">Nachname</label>
+                        <input id="nachname" type="text" name="Nachname" placeholder="Masters" />
+                    </li>
+                    <li>
+                        <label>Email-Adresse</label>
+                        <input id="email"
+                               type="text"  name="Email" placeholder="maxine@masters.com" >
+                    </li>
+                    <li>
+                        <label>Passwort</label>
+                        <input id="passwort" type="password"  name="Password" >
+                    </li>
+                    <li>
+                        <input id="submit_button" class="submit_button" type="button" value="Abschicken">
+                    </li>
+                </ol>
+
+            </form>
+        </div>
+
+        <script>
+
+            //wird nach Laden des HTML-Body ausgeführt...
+            //Stellt sicher, dass auf alle DOM-Elemente zugegriffen werden kann.
+            //document.body.onload = function ()
+            //{
+            function checkIfNotEmpty()
+            {
+
+                var vorname = document.getElementById('vorname');
+                var nachname = document.getElementById('nachname');
+                var email = document.getElementById('email');
+                var passwort = document.getElementById('passwort');
+
+                var inputs = [vorname, nachname, email, passwort];
+
+                for (var i = 0; i < inputs.length; i++)
+                {
+                    if (inputs[i].value.length == 0)
+                        return false;
+                }
+
+                return true;
+
+            }
+
+            function checkPW(password)
+            {
+                var regExp = new RegExp("^.*(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])[a-zA-Z0-9@#$%^&+=]*$");
+                return regExp.test(password);
+            }
+
+            function highlightThis(DOMObject, color)
+            {                
+                DOMObject.style.border = '1px solid '+color;
+            }
+
+            function checkInputs()
+            {
+                var vorname = document.getElementById('vorname');
+                var nachname = document.getElementById('nachname');
+                var email = document.getElementById('email');
+                var passwort = document.getElementById('passwort');
+                var fehler = document.getElementById('fehler');
+                
+                fehler.innerHTML='';
+                
+                var inputsWithErrors = [];
+                var inputsOK = true;
+
+                var inputs = [vorname, nachname, email, passwort];
+              
+                for (var i = 0; i < inputs.length; i++)
+                {
+                    
+                    var element = inputs[i];
+                    if (element.value.length == 0)
+                    {
+                        inputsWithErrors.push(element);
+                        highlightThis(element, 'red');
+                        fehler.innerHTML += '<p>' + capitalizeFirstLetter(element.id) + ' muss eingegeben werden.</p>';
+                        inputsOK = false;
+                    }else
+                        highlightThis(element, 'green');
+                    
+                    if (element.id == 'passwort')
+                        if (!checkPW(element.value))
+                        {
+                         
+                            fehler.innerHTML += '<p>' + capitalizeFirstLetter(element.id) + ' entspricht nicht den Richtlinien.</p>';
+                            highlightThis(element, 'red');
+                            inputsOK = false;
+                        }
+
+                    if (!inputsOK)
+                        fehler.style.visibility = 'visible'
+                }
+                return inputsOK;
+
+            }
+
+
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+
+            //Hole Button...
+            var submitbutton = document.getElementById("submit_button");
+            //Definiere ActionListener für Buttonklicks
+            //Wenn Button gedrückt wird...
+            submitbutton.addEventListener('click', function ()
+            {
+
+                if (checkInputs())
+                {
+                    //Hole Form-Objekt
+                    var nlform = document.getElementById("nlform");
+                    //Sende Form ab
+                    nlform.submit();
+                }
+
+            });
+
+            // };
+
+            /*
+             * 1. Das JavaScript wird nach Laden des Bodys ausgeführt. Weshalb?
+             * Um sicher zu stellen das die HTML-Elemente geladen worden sind.
+             * 
+             * 2. Welche Zeile ist für das Reagieren auf den Buttonklick ausschlaggebend?
+             *    submitbutton.addEventListener('click', function ()..
+             * 
+             * 3. Warum wird das Formular nicht sofort an den Server gesendet?
+             *  Der Button muss zuerst geklickt werden.
+             *  
+             *  4. Welche Zeile ist für das Absenden des Formulars verantwortlich?
+             *    nlform.submit();
+             */
+        </script>
+
+
+    </body>
+</html>
